@@ -56,7 +56,7 @@ pip install -r requirements-api.txt
 
 *(Note: If you plan to retrain the model, make sure you have the full required deep learning tools installed like `tensorflow`).*
 
-### 2. Running the API Server
+### 2. Running the API Server (Locally)
 
 The project includes a blazing-fast REST API for real-time waste classification! Start the server running locally on your machine from your terminal:
 
@@ -65,6 +65,22 @@ uvicorn api:app --reload
 ```
 
 The API will instantly start up and host a Swagger UI at: **[`http://127.0.0.1:8000/docs`](http://127.0.0.1:8000/docs)**. You can navigate here to test the model by uploading a photo directly from your web browser!
+
+### 3. Running with Docker 🐳 (Recommended)
+
+You can easily containerize and run the API anywhere using Docker, without needing to install Python or TensorFlow on your host machine!
+
+**Build the Docker image:**
+```bash
+docker build -t waste-classifier-api .
+```
+
+**Run the Docker container:**
+```bash
+docker run -d -p 8000:8000 --name waste-api waste-classifier-api
+```
+
+Your API will now be live on `http://127.0.0.1:8000/docs` just like the local method, but completely isolated! You can stop the container anytime using `docker stop waste-api`.
 
 ---
 
