@@ -4,3 +4,4 @@ python-multipart
 Pillow
 tensorflow
 numpy
+ultralytics>=8.0.0

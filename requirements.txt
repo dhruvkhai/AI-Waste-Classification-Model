@@ -1,0 +1,5 @@
+# YOLOv11 requirements
+ultralytics>=8.0.0
+opencv-python
+numpy
+# Add any other dependencies needed for dataset conversion
