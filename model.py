@@ -1,7 +1,7 @@
-import tensorflow as tf
-from tensorflow.keras.applications import MobileNetV2
-from tensorflow.keras.layers import Dense, GlobalAveragePooling2D, Dropout
-from tensorflow.keras.models import Model
+import tensorflow as tf  # type: ignore
+from tensorflow.keras.applications import MobileNetV2  # type: ignore
+from tensorflow.keras.layers import Dense, GlobalAveragePooling2D, Dropout  # type: ignore
+from tensorflow.keras.models import Model  # type: ignore
 
 def build_model(num_classes=3, input_shape=(224, 224, 3)):
     """

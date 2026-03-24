@@ -1,7 +1,7 @@
 import os
-import tensorflow as tf
-from tensorflow.keras.preprocessing.image import ImageDataGenerator
-from tensorflow.keras.applications.mobilenet_v2 import preprocess_input
+import tensorflow as tf  # type: ignore
+from tensorflow.keras.preprocessing.image import ImageDataGenerator  # type: ignore
+from tensorflow.keras.applications.mobilenet_v2 import preprocess_input  # type: ignore
 
 def get_data_generators(dataset_dir, target_size=(224, 224), batch_size=32):
     """

@@ -1,7 +1,7 @@
-import tensorflow as tf
-import numpy as np
-from tensorflow.keras.preprocessing import image
-from tensorflow.keras.applications.mobilenet_v2 import preprocess_input
+import tensorflow as tf  # type: ignore
+import numpy as np  # type: ignore
+from tensorflow.keras.preprocessing import image  # type: ignore
+from tensorflow.keras.applications.mobilenet_v2 import preprocess_input  # type: ignore
 import os
 
 def load_trained_model(model_path='waste_classifier_final.h5'):

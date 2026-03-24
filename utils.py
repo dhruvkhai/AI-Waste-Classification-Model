@@ -1,7 +1,7 @@
-import matplotlib.pyplot as plt
-import numpy as np
-from sklearn.metrics import confusion_matrix
-import seaborn as sns
+import matplotlib.pyplot as plt  # type: ignore
+import numpy as np  # type: ignore
+from sklearn.metrics import confusion_matrix  # type: ignore
+import seaborn as sns  # type: ignore
 import os
 
 def plot_training_history(history, save_path="training_history.png"):

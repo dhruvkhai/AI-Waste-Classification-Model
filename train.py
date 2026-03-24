@@ -1,12 +1,12 @@
 import os
-import tensorflow as tf
-from tensorflow.keras.optimizers import Adam
-from tensorflow.keras.callbacks import EarlyStopping, ModelCheckpoint, ReduceLROnPlateau
-import numpy as np
+import tensorflow as tf  # type: ignore
+from tensorflow.keras.optimizers import Adam  # type: ignore
+from tensorflow.keras.callbacks import EarlyStopping, ModelCheckpoint, ReduceLROnPlateau  # type: ignore
+import numpy as np  # type: ignore
 
-from data_loader import get_data_generators
-from model import build_model, unfreeze_model
-from utils import plot_training_history, plot_confusion_matrix, print_class_indices
+from data_loader import get_data_generators  # type: ignore
+from model import build_model, unfreeze_model  # type: ignore
+from utils import plot_training_history, plot_confusion_matrix, print_class_indices  # type: ignore
 
 def train_pipeline(dataset_dir="dataset", epochs_initial=10, epochs_finetune=10, batch_size=32):
     """
@@ -74,7 +74,7 @@ def train_pipeline(dataset_dir="dataset", epochs_initial=10, epochs_finetune=10,
     class _MergedHistory:
         pass
     merged_history = _MergedHistory()
-    merged_history.history = history_initial.history
+    merged_history.history = history_initial.history  # type: ignore
     
     # 5. Evaluation & Plotting
     print("Evaluating and plotting results...")

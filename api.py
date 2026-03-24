@@ -1,11 +1,11 @@
-import tensorflow as tf
-import numpy as np
+import tensorflow as tf  # type: ignore
+import numpy as np  # type: ignore
 import io
 import os
-from fastapi import FastAPI, File, UploadFile, HTTPException
-from fastapi.responses import JSONResponse
-from PIL import Image
-from tensorflow.keras.applications.mobilenet_v2 import preprocess_input
+from fastapi import FastAPI, File, UploadFile, HTTPException  # type: ignore
+from fastapi.responses import JSONResponse  # type: ignore
+from PIL import Image  # type: ignore
+from tensorflow.keras.applications.mobilenet_v2 import preprocess_input  # type: ignore
 
 app = FastAPI(title="Waste Classification API", description="API for classifying waste using MobileNetV2")
 
