@@ -1,0 +1,9 @@
+train: archive/Warp-D/train/images
+val: archive/Warp-D/test/images
+test: archive/Warp-D/test/images
+
+nc: 3
+names: 
+  0: 'biodegradable'
+  1: 'recyclable'
+  2: 'hazardous'
