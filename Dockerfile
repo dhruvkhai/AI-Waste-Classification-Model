@@ -20,7 +20,9 @@ RUN pip install --no-cache-dir -r requirements-api.txt
 # Copy the rest of the application files
 # We ignore unnecessary files via .dockerignore
 COPY api.py .
+COPY inference.py .
 COPY waste_classifier_final.h5 .
+COPY yolo11n.pt .
 
 # Expose port 8000 for the FastAPI server
 EXPOSE 8000

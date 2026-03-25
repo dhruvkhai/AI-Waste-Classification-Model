@@ -1,0 +1,118 @@
+=============================================================
+# AI Waste Classification Project Documentation
+=============================================================
+
+This documentation provides an in-depth look at the project's components, libraries, file structure, and model pipelines. The system combines object detection (YOLOv11) and image classification (MobileNetV2) to accurately identify and categorize waste into three main classes: Biodegradable, Recyclable, and Hazardous.
+
+---
+## 1. Project Architecture and Pipelining
+
+The project uses a two-stage computer vision pipeline:
+
+1. **Detection Stage (YOLOv11)**
+   - **Purpose:** To locate waste objects within an image.
+   - **Model:** YOLOv11 (Nano version `yolo11n.pt` used as a base).
+   - **How it works:** `inference.py` loads the YOLOv11 object detector which scans an input image. When it finds an object, it outputs a bounding box and a confidence score. The script then crops the image to isolate just that object.
+   - **Dataset:** `cluttered_waste_DATASET/Warp-D/`. Contains YOLO-formatted text annotations and images.
+
+2. **Classification Stage (MobileNetV2)**
+   - **Purpose:** To classify the cropped objects from the detection stage.
+   - **Model:** Transfer learning based on Keras `MobileNetV2` (`waste_classifier_final.h5`).
+   - **How it works:** The cropped image is resized to 224x224, preprocessed exactly as it was during training (MobileNetV2 standardization), and fed into the fine-tuned model to determine if it is biodegradable, recyclable, or hazardous.
+   - **Dataset:** `DATASET/`. Contains image folders separated by class.
+
+3. **Inference Pipeline Integration**
+   - The end-to-end pipeline connects both models as observed in `inference.py`. The YOLO model runs detection, crops the bounds, and invokes a classification helper (e.g., `mobile_net_classifier`) which bridges the MobileNetV2 logic on localized regions.
+
+4. **API and Deployment**
+   - The MobileNetV2 classifier is currently hosted via a `FastAPI` endpoint (`api.py`), allowing external services to predict full-frame or cropped images seamlessly via a `POST /predict` REST API.
+
+---
+## 2. File Structure
+
+- **`api.py`**
+  FastAPI application server. It loads the MobileNet model on startup and exposes a `/predict` endpoint that accepts multipart/form-data images for real-time inference.
+
+- **`train.py` & `model.py`**
+  Training scripts for the MobileNetV2 architecture. `model.py` defines the base layers from `keras.applications` and adds a custom classification head. `train.py` orchestrates the transfer learning training pipeline (two phases: unfrozen top head, followed by unfreezing base layers for fine-tuning). Outputs are `best_model.h5` and `waste_classifier_final.h5`.
+
+- **`data_loader.py`**
+  Uses `ImageDataGenerator` for data augmentation (rotation, zooming, flipping) during MobileNet training.
+
+- **`predict.py`**
+  A standalone CLI script to load the MobileNet `.h5` model, preprocess an image, and infer the class. It also includes utility functions to export the `.h5` model to a `.tflite` format for edge/mobile device capability.
+
+- **`inference.py`**
+  The YOLOv11 detection script. Connects the models by running localized object detection and then forwarding the crop to the MobileNet classifier.
+
+- **`yolo_v11_train.py`**
+  Training script for the YOLOv11 object detection model. It parses parameters and invokes Ultralytics' training engine over the `data.yaml` dataset.
+
+- **`remap_labels.py` & `download_extra_data.py`**
+  Data preprocessing tools. They map original dataset categories to a target index (e.g., mapping to 'recyclable') and dynamically download images from Wikimedia Commons for 'Biodegradable' and 'Hazardous' categories via JSON APIs. These prepared `cluttered_waste_DATASET`.
+
+- **`test_req.py` & `test_req_docker.py`**
+  Testing clients making HTTP requests via the `requests` library to ensure the `api.py` (local or via Docker) correctly receives image payloads and responds with JSON.
+
+- **`utils.py`**
+  Utility script using `matplotlib` and `sklearn` or `numpy` to generate training history graphs (`training_history.png`) and confusion matrices (`confusion_matrix.png`).
+
+- **`Dockerfile`**
+  Configuration to containerize the `FastAPI` service. It uses a minimal Python 3.12 image to guarantee reproducible runtime environments without host machine dependencies.
+
+---
+## 3. Libraries, Tech Stack & Why We Use Them
+
+1. **TensorFlow (Keras)**
+   - **Usage:** Core deep learning framework for the classification model (`MobileNetV2`).
+   - **Why:** Robust ecosystem for transfer learning, saving models to `.h5`, and easily converting to `.tflite` for edge computing. Keras provides standard implementations of complex vision architectures.
+
+2. **Ultralytics (YOLO)**
+   - **Usage:** Core deep learning framework for the object detection model (`YOLOv11`).
+   - **Why:** State-of-the-art inference speed and accuracy. Essential for identifying multiple pieces of waste in a cluttered visual scene.
+
+3. **FastAPI & Uvicorn**
+   - **Usage:** Backend REST API.
+   - **Why:** FastAPI is asynchronous and incredibly fast. It automatically generates Swagger UI documentation. Uvicorn is the lightning-fast ASGI server that runs the API.
+
+4. **OpenCV (`cv2`) & Pillow (`PIL`)**
+   - **Usage:** Image parsing, resizing, color conversion (BGR to RGB), and coordinate-based cropping.
+   - **Why:** YOLO natively works well with OpenCV (NumPy arrays). MobileNet preprocessing is handled effectively via Pillow. Both provide fast disk I/O for images.
+
+5. **NumPy**
+   - **Usage:** Array manipulation, mathematical operations like `np.argmax`, resizing buffers.
+   - **Why:** Standardized library for tensor transformations required before pushing data into AI models.
+
+6. **Requests & urllib**
+   - **Usage:** Web communication. `urllib` is used to scrape Wikimedia for images in `download_extra_data.py`. `Requests` tests the API.
+   - **Why:** Simplifies HTTP client calls avoiding heavy boilerplate code.
+
+7. **Matplotlib**
+   - **Usage:** Generating charts for model evaluation (accuracy/loss plots, confusion matrices).
+   - **Why:** Visualizing training metrics is critical to prevent overfitting.
+
+---
+## 4. Testing & Results
+
+### Test Cases
+- **Test Case 1 (Single Object):** A clear image of a single plastic bottle. Expected: Detection box around the bottle, classified as 'Recyclable'.
+- **Test Case 2 (Multiple Objects):** An image with both a cardboard box and an apple core. Expected: Two bounding boxes; cardboard classified as 'Recyclable' and apple core as 'Biodegradable'.
+- **Test Case 3 (Cluttered Background):** Waste object partially obscured by non-waste items. Expected: YOLO identifies the waste object despite background noise.
+- **API Endpoint Test:** Sending a POST request to `/predict` with an image. Expected: A 200 OK status code with a JSON response containing `prediction` and `confidence`.
+
+### Inputs & Outputs
+- **Inputs:** Raw user-provided images (JPEG/PNG) containing waste items, uploaded via the FastAPI `/predict` endpoint, `predict.py`, or `inference.py`.
+- **Outputs:** JSON responses or console output containing the predicted waste category (Biodegradable, Recyclable, Hazardous), a confidence score (e.g., 0.985), and optionally bounding box coordinates.
+
+### Screenshots / Graphs
+- **Training History (`training_history.png`):** Tracks the training vs. validation loss and accuracy curves over the epochs. It visibly demonstrates model convergence and helps ensure the model is not overfitting.
+- **Confusion Matrix (`confusion_matrix.png`):** A heatmap demonstrating the MobileNetV2 classification accuracy across the three specific classes, highlighting prediction successes and any areas of confusion (e.g., misclassifying biodegradable as recyclable).
+
+### Performance Analysis
+- **YOLOv11 Nano:** Achieves extremely fast inference times, making it suitable for real-time processing and deployment on edge devices like smart bins.
+- **MobileNetV2:** A lightweight classification model optimized for mobile/edge setups, ensuring the secondary classification step adds minimal latency. 
+- **Deployment Efficiency:** The Dockerized FastAPI implementation ensures scalable and non-blocking handling of concurrent image classification requests.
+
+### Training Accuracy and Testing / Validation Accuracy
+- **Training Accuracy:** Consistently reaches high accuracy levels on the training dataset, indicating that the model effectively learns feature representations for the 3 classes.
+- **Testing / Validation Accuracy:** Validation accuracy closely mirrors training accuracy (demonstrated in `training_history.png`), showing that the system generalizes well to unseen waste images with robust predictive performance.

@@ -5,14 +5,14 @@
 ![FastAPI](https://img.shields.io/badge/FastAPI-Modern-green.svg)
 ![MobileNetV2](https://img.shields.io/badge/Model-MobileNetV2-blueviolet)
 
-An intelligent, lightweight, and blazing-fast image classification system that categorizes waste into **Biodegradable**, **Recyclable**, and **Hazardous** categories using a fine-tuned MobileNetV2 model.
+An intelligent, lightweight image pipeline that locates waste objects using **YOLOv11** and categorizes them into **Biodegradable**, **Recyclable**, and **Hazardous** categories using a fine-tuned **MobileNetV2** model.
 
 Designed for edge deployment (e.g., smart bins or raspberry pi) with built-in support for real-time predictions via a robust **FastAPI backend**.
 
 ---
 
 ## ✨ Key Features
-- **High Accuracy & Speed**: Uses `MobileNetV2` for rapid, real-time image inference.
+- **High Accuracy Object Detection & Classification**: Uses `YOLOv11` for precise object localization and `MobileNetV2` for rapid crop classification.
 - **Pre-trained Edge Model**: Includes a highly optimized `.h5` model with automatic conversion scripts to `TensorFlow Lite (.tflite)` for ultra-low latency edge devices.
 - **Real-Time API**: A sleek `FastAPI` service that accepts image uploads and responds with the predicted waste class instantly.
 - **Easy Pipeline**: Modular scripts for data loading, training, predicting, and deploying.
@@ -20,10 +20,10 @@ Designed for edge deployment (e.g., smart bins or raspberry pi) with built-in su
 ---
 
 ## 🛠️ Technology Stack
-* **Deep Learning Framework**: TensorFlow Core & Keras
-* **Base Architecture**: MobileNetV2 (Transfer Learning)
+* **Deep Learning Frameworks**: Ultralytics (YOLO) & TensorFlow Core / Keras (MobileNet)
+* **Base Architectures**: YOLOv11 (Detection) & MobileNetV2 (Classification)
 * **Backend API API Server**: FastAPI & Uvicorn
-* **Image Processing**: Pillow & NumPy
+* **Image Processing**: OpenCV, Pillow & NumPy
 
 ---
 
@@ -31,15 +31,19 @@ Designed for edge deployment (e.g., smart bins or raspberry pi) with built-in su
 
 ```text
 AI_Waste_Project/
-├── api.py                      # FastAPI server for the real-time API
-├── train.py                    # Script to train and fine-tune the model
-├── predict.py                  # CLI tool to run predictions on images
-├── data_loader.py              # Handles Dataset loading/augmentation
+├── api.py                      # FastAPI server for the real-time API (MobileNet classification)
+├── train.py                    # Script to train and fine-tune the MobileNetV2 model
+├── predict.py                  # CLI tool to run predictions on images (MobileNet)
+├── inference.py                # Pipeline script using YOLOv11 for detection, MobileNet for classification
+├── yolo_v11_train.py           # Script to train the YOLOv11 model
+├── data_loader.py              # Handles Dataset loading/augmentation for MobileNet
 ├── utils.py                    # Utility functions for metrics & visualizations
 ├── best_model.h5               # Model checkpoints during training
 ├── waste_classifier_final.h5   # Fully trained and optimized classification model
+├── yolo11n.pt                  # YOLOv11 model weights
 ├── requirements-api.txt        # FastAPI dependencies
-└── DATASET/                    # (Folder containing images split by class)
+├── cluttered_waste_DATASET/    # YOLO detection dataset
+└── DATASET/                    # MobileNet classification dataset
 ```
 
 ---
@@ -112,9 +116,9 @@ curl -X 'POST' \
 
 ## 🧠 Model Training (Optional)
 
-If you would like to retrain the model on your own newly gathered data:
+If you would like to retrain the models on your own newly gathered data:
 
-1. Ensure your data is organized inside the `DATASET/` folder with sub-folders corresponding to each class (e.g., `biodegradable`, `recyclable`, `hazardous`).
+1. Ensure your classification data is organized inside the `DATASET/` folder with sub-folders corresponding to each class (e.g., `biodegradable`). For YOLO, use `cluttered_waste_DATASET/`.
 2. Run the `train.py` script to retrain the `MobileNetV2` head:
    ```bash
    python train.py
