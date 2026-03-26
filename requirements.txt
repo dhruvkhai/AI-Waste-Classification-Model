@@ -1,5 +1,8 @@
-# YOLOv11 requirements
-ultralytics>=8.0.0
-opencv-python
-numpy
-# Add any other dependencies needed for dataset conversion
+ultralytics>=8.3.0
+tensorflow>=2.11.0
+numpy>=1.23.0
+opencv-python>=4.6.0
+scikit-learn>=1.0.0
+matplotlib>=3.5.0
+seaborn>=0.11.0
+torch>=1.13.0
