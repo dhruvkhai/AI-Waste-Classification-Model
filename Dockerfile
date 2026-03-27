@@ -23,6 +23,7 @@ COPY api.py .
 COPY inference.py .
 COPY waste_classifier_final.h5 .
 COPY yolo11n.pt .
+COPY runs/detect/train2/weights/best.pt runs/detect/train2/weights/best.pt
 
 # Expose port 8000 for the FastAPI server
 EXPOSE 8000

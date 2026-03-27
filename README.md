@@ -12,6 +12,7 @@ Designed for edge deployment (e.g., smart bins or raspberry pi) with built-in su
 ---
 
 ## ✨ Key Features
+
 - **High Accuracy Object Detection & Classification**: Uses `YOLOv11` for precise object localization and `MobileNetV2` for rapid crop classification.
 - **Pre-trained Edge Model**: Includes a highly optimized `.h5` model with automatic conversion scripts to `TensorFlow Lite (.tflite)` for ultra-low latency edge devices.
 - **Real-Time API**: A sleek `FastAPI` service that accepts image uploads and responds with the predicted waste class instantly.
@@ -19,11 +20,20 @@ Designed for edge deployment (e.g., smart bins or raspberry pi) with built-in su
 
 ---
 
+## 🚀 What's New in the Latest YOLOv11 Model
+
+- **Successfully Fully Trained**: Completed a full 50-epoch training run (`runs/detect/train2`) with excellent accuracy metrics.
+- **Specific Object Names**: The updated model now outputs the specific object entity name when it detects waste.
+- **28 Detailed Classes**: Training was fundamentally performed on 28 granular classes, seamlessly mapped into our core top-level categories.
+
+---
+
 ## 🛠️ Technology Stack
-* **Deep Learning Frameworks**: Ultralytics (YOLO) & TensorFlow Core / Keras (MobileNet)
-* **Base Architectures**: YOLOv11 (Detection) & MobileNetV2 (Classification)
-* **Backend API API Server**: FastAPI & Uvicorn
-* **Image Processing**: OpenCV, Pillow & NumPy
+
+- **Deep Learning Frameworks**: Ultralytics (YOLO) & TensorFlow Core / Keras (MobileNet)
+- **Base Architectures**: YOLOv11 (Detection) & MobileNetV2 (Classification)
+- **Backend API API Server**: FastAPI & Uvicorn
+- **Image Processing**: OpenCV, Pillow & NumPy
 
 ---
 
@@ -58,7 +68,7 @@ Ensure you have Python 3.8+ installed. Clone this repository and install the dep
 pip install -r requirements-api.txt
 ```
 
-*(Note: If you plan to retrain the model, make sure you have the full required deep learning tools installed like `tensorflow`).*
+_(Note: If you plan to retrain the model, make sure you have the full required deep learning tools installed like `tensorflow`)._
 
 ### 2. Running the API Server (Locally)
 
@@ -75,13 +85,15 @@ The API will instantly start up and host a Swagger UI at: **[`http://127.0.0.1:8
 You can easily containerize and run the API anywhere using Docker, without needing to install Python or TensorFlow on your host machine!
 
 **Build the Docker image:**
+
 ```bash
-docker build -t waste-classifier-api .
+docker build -t waste_ai_deployed .
 ```
 
 **Run the Docker container:**
+
 ```bash
-docker run -d -p 8000:8000 --name waste-api waste-classifier-api
+docker run -d -p 8000:8000 --name waste-api_deployed waste_ai_deployed
 ```
 
 Your API will now be live on `http://127.0.0.1:8000/docs` just like the local method, but completely isolated! You can stop the container anytime using `docker stop waste-api`.
@@ -91,9 +103,11 @@ Your API will now be live on `http://127.0.0.1:8000/docs` just like the local me
 ## 📸 API Reference
 
 ### `POST /predict`
+
 Upload an image of waste through this endpoint, and get an immediate JSON response with its predicted category!
 
 **Example Curl Request:**
+
 ```bash
 curl -X 'POST' \
   'http://127.0.0.1:8000/predict' \
@@ -103,6 +117,7 @@ curl -X 'POST' \
 ```
 
 **Example JSON Response:**
+
 ```json
 {
   "success": true,
@@ -131,4 +146,4 @@ If you would like to retrain the models on your own newly gathered data:
 
 ---
 
-*Let's build a sustainable future with AI! 🌍*
+_Let's build a sustainable future with AI! 🌍_
