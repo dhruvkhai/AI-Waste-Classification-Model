@@ -1,6 +1,6 @@
 {
-    "python.defaultInterpreterPath": "C:\\Users\\DELL\\AppData\\Local\\Programs\\Python\\Python312\\python.exe",
+    "python.defaultInterpreterPath": "C:\\Program Files\\Python\\Python312\\python.exe",
     "python.analysis.extraPaths": [
-        "c:\\users\\dhruv\\appdata\\local\\programs\\python\\python312\\lib\\site-packages"
+        "C:\\Program Files\\Python\\Python312\\Lib\\site-packages"
     ]
 }

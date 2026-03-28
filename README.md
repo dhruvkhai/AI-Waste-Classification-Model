@@ -144,6 +144,35 @@ If you would like to retrain the models on your own newly gathered data:
    python predict.py --convert  # Converts model to .tflite format for Edge!
    ```
 
+## Project Structure
+
+- `api.py`: FastAPI server with multi-object detection and classification.
+- `predict.py`: CLI tool for single image and folder-based classification.
+- `mobile_classification_models.py`: Helper for MobileNetV2 classification.
+- `inference.py`: YOLOv11 inference logic.
+- `waste_classifier_final.h5`: Trained MobileNetV2 model.
+- `yolo11n.pt`: Pre-trained YOLOv11 model.
+- `TESTED_DATASET/`: Automatically created directory for collected test data.
+
+## Testing Pipeline
+
+### 1. Terminal (Bulk Folder Testing)
+You can now test an entire folder of images at once:
+```bash
+python predict.py --folder "C:\path\to\your\images"
+```
+Each prediction will show the process time and will be saved to `TESTED_DATASET/`.
+
+### 2. Web API (Multi-Image Testing)
+The API at `/predict` now accepts multiple files.
+- Go to `http://localhost:8000/docs`.
+- Use the `/predict` POST endpoint.
+- Select multiple images using the "Add string item" or by selecting multiple files in the browser dialog.
+- The response will include timing for each image and the overall status.
+
+## Data Collection
+Every image tested through `predict.py` or the API is automatically saved in the `TESTED_DATASET/` folder, organized by the predicted label (`biodegradable`, `hazardous`, `recyclable`). This allows for continuous dataset expansion and model refinement.
+
 ---
 
 _Let's build a sustainable future with AI! 🌍_

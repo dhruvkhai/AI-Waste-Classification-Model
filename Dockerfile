@@ -4,26 +4,30 @@ FROM python:3.12-slim
 # Set the working directory in the container
 WORKDIR /app
 
-# Install system dependencies
-# (libgl1-mesa-glx and libglib2.0-0 are often needed for cv2/Pillow but Pillow usually works without them. 
-# We'll just install standard tools just in case, but keep it minimal)
+# Install system dependencies for OpenCV and tools
 RUN apt-get update && apt-get install -y --no-install-recommends \
     curl \
+    libgl1 \
+    libglib2.0-0 \
     && rm -rf /var/lib/apt/lists/*
 
-# Copy requirements file first to leverage Docker cache
+# Copy requirements files first to leverage Docker cache
 COPY requirements-api.txt .
+COPY requirements.txt .
 
 # Install Python dependencies
-RUN pip install --no-cache-dir -r requirements-api.txt
+RUN pip install --no-cache-dir --default-timeout=100 -r requirements-api.txt -r requirements.txt
 
-# Copy the rest of the application files
-# We ignore unnecessary files via .dockerignore
+# Copy application files
 COPY api.py .
+COPY predict.py .
+COPY mobile_classification_models.py .
 COPY inference.py .
 COPY waste_classifier_final.h5 .
 COPY yolo11n.pt .
-COPY runs/detect/train2/weights/best.pt runs/detect/train2/weights/best.pt
+
+# Create the collection directory
+RUN mkdir -p TESTED_DATASET
 
 # Expose port 8000 for the FastAPI server
 EXPOSE 8000
