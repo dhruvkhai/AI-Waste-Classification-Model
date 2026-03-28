@@ -33,4 +33,4 @@ RUN mkdir -p TESTED_DATASET
 EXPOSE 8000
 
 # Command to run the FastAPI server using Uvicorn
-CMD ["uvicorn", "api:app", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["sh", "-c", "uvicorn api:app --host 0.0.0.0 --port ${PORT:-8000}"]

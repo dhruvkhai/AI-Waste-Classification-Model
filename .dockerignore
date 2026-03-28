@@ -26,9 +26,22 @@ var/
 venv/
 .env
 
-# Project specific
+# Project specific - Large Datasets & Artifacts
 DATASET/
+cluttered_waste_images_DATASET/
+TESTED_DATASET/
+runs/
+*.zip
+*.7z
+*.tar.gz
+*.png
+*.jpg
+*.jpeg
+!yolo11n.pt
+!waste_classifier_final.h5
+!training_history.png
+!confusion_matrix.png
+
+# Model development artifacts
 best_model.h5
-training_history.png
-confusion_matrix.png
 *test_req.py
