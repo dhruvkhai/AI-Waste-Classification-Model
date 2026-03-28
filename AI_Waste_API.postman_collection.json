@@ -1,0 +1,84 @@
+{
+	"info": {
+		"_postman_id": "041b85d5-6858-4afb-bede-0171efeb3e6a",
+		"name": "AI Waste Classification API",
+		"description": "API for detecting and classifying waste types using YOLOv11 and MobileNetV2.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Home / Health Check",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						""
+					]
+				},
+				"description": "Check if the API is running."
+			},
+			"response": []
+		},
+		{
+			"name": "Predict Waste (Single/Multiple Images)",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "files",
+							"type": "file",
+							"src": [],
+							"description": "One or more image files to classify."
+						}
+					]
+				},
+				"url": {
+					"raw": "{{baseUrl}}/predict",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"predict"
+					]
+				},
+				"description": "Upload one or more images to detect objects and classify them into waste categories (Biodegradable, Hazardous, Recyclable)."
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:8080",
+			"type": "string"
+		}
+	]
+}
